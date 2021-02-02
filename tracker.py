@@ -5,6 +5,9 @@ import graphyte
 
 config_path = '/config/.stocktracker.yml'
 
+def get_portfolio_currency():
+    return get_config()['portfolio_currency']
+
 def get_config():
     with open(config_path) as f:#fix path to home
         config = yaml.load(f, Loader=yaml.FullLoader)
@@ -18,8 +21,8 @@ def get_exchange_rate(asset_currency):
         return yf.Ticker(f'{asset_currency}{portfolio_currency}=X').info['regularMarketPrice']
 
 def get_exchange_rate_at_date(date, asset_currency):
-    if (asset_currency != "EUR"):
-        return yf.Ticker(f"{asset_currency}EUR=X").history('1d', start=date, end=date)['Open'][0]
+    if (asset_currency != get_portfolio_currency()):
+        return yf.Ticker(f"{asset_currency}{get_portfolio_currency()}=X").history('1d', start=date, end=date)['Open'][0]
     else:
         return 1
 
